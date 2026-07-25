@@ -146,6 +146,7 @@
 <div id="rotateHint" class="hidden">
   <div id="rotateIcon">📱</div>
   <div data-i18n="rotateMsg">Rotate your phone to landscape</div>
+  <button class="btn secondary" id="rotateSkipBtn" data-i18n="playPortrait">Play in portrait</button>
 </div>
 
 <div id="startPanel" class="panel">
@@ -328,7 +329,7 @@ const UI = {
     settings: '⚙️ Settings', title: 'Wing Dodge 3D', play: 'Play', shop: '⭐ Shop',
     sound: '🔊 Sound', vibration: '📳 Vibration', lowGfx: '🪶 Low graphics', language: '🌐 Language',
     controls: '🎮 Controls', ctrlButtons: 'Buttons', ctrlSplit: 'Split touch', ctrlTilt: 'Tilt',
-    rotateMsg: 'Rotate your phone to landscape',
+    rotateMsg: 'Rotate your phone to landscape', playPortrait: 'Play in portrait',
     help: '❓ Help', support: '📮 Support', resetData: '🗑 Reset data', close: 'Close',
     reviveQ: '💫 Revive?', score: 'Score', giveUp: 'Give up', playingAd: '📺 Playing ad...',
     adPlaceholder: '(Ad SDK will be integrated here)', gameOver: 'Game Over',
@@ -350,7 +351,7 @@ const UI = {
     settings: '⚙️ 설정', title: 'Wing Dodge 3D', play: '게임 시작', shop: '⭐ 상점',
     sound: '🔊 소리', vibration: '📳 진동', lowGfx: '🪶 저사양 모드', language: '🌐 언어',
     controls: '🎮 조작', ctrlButtons: '버튼', ctrlSplit: '좌우 분할', ctrlTilt: '기울기',
-    rotateMsg: '폰을 가로로 돌려주세요',
+    rotateMsg: '폰을 가로로 돌려주세요', playPortrait: '세로로 하기',
     help: '❓ 도움말', support: '📮 고객센터', resetData: '🗑 데이터 초기화', close: '닫기',
     reviveQ: '💫 부활할래요?', score: '점수', giveUp: '포기하기', playingAd: '📺 광고 재생 중...',
     adPlaceholder: '(여기에 실제 광고 SDK가 연동될 자리예요)', gameOver: '게임 오버',
@@ -2398,9 +2399,16 @@ const showTouchButtons = on => touchControlsEl.classList.toggle('hidden', !(on &
 
 // 폰은 가로 모드 권장 — 세로로 들면 안내 오버레이
 const rotateHint = document.getElementById('rotateHint');
+let portraitOk = sessionStorage.getItem('wingdodge-portrait') === '1';   // '세로로 하기' 선택 시
 function checkOrient() {
-  rotateHint.classList.toggle('hidden', !(isTouchDevice && innerHeight > innerWidth));
+  rotateHint.classList.toggle('hidden', portraitOk || !(isTouchDevice && innerHeight > innerWidth));
 }
+document.getElementById('rotateSkipBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  portraitOk = true;
+  sessionStorage.setItem('wingdodge-portrait', '1');
+  checkOrient();
+});
 addEventListener('resize', checkOrient);
 addEventListener('orientationchange', checkOrient);
 checkOrient();
