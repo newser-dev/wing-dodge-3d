@@ -166,6 +166,7 @@
   <div class="set-row"><span data-i18n="sound">🔊 Sound</span><button class="btn set-toggle" id="setSfxBtn">On</button></div>
   <div class="set-row"><span data-i18n="vibration">📳 Vibration</span><button class="btn set-toggle" id="setVibBtn">On</button></div>
   <div class="set-row"><span data-i18n="lowGfx">🪶 Low graphics</span><button class="btn set-toggle" id="setLowBtn">Off</button></div>
+  <div class="set-row" id="ctrlRow"><span data-i18n="controls">🎮 Controls</span><button class="btn set-toggle" id="setCtrlBtn">Split touch</button></div>
   <div class="set-row"><span data-i18n="language">🌐 Language</span><button class="btn set-toggle" id="setLangBtn">English</button></div>
   <button class="btn secondary" id="helpBtn" data-i18n="help">❓ Help</button>
   <a class="btn secondary" id="csBtn" style="text-decoration:none; display:inline-block;"
@@ -311,6 +312,7 @@ const UI = {
   en: {
     settings: '⚙️ Settings', title: 'Wing Dodge 3D', play: 'Play', shop: '⭐ Shop',
     sound: '🔊 Sound', vibration: '📳 Vibration', lowGfx: '🪶 Low graphics', language: '🌐 Language',
+    controls: '🎮 Controls', ctrlSplit: 'Split touch', ctrlTilt: 'Tilt',
     help: '❓ Help', support: '📮 Support', resetData: '🗑 Reset data', close: 'Close',
     reviveQ: '💫 Revive?', score: 'Score', giveUp: 'Give up', playingAd: '📺 Playing ad...',
     adPlaceholder: '(Ad SDK will be integrated here)', gameOver: 'Game Over',
@@ -326,11 +328,12 @@ const UI = {
     hintNeedScore: '🔒 Reach {1} in {0} first (best {2})', hintNeedStars: '⭐ Not enough! Need ⭐{0}',
     hintConfirm: '🔓 Tap again to unlock', unlockConfirmBtn: 'Unlock now? (⭐{0})', unlockDone: '🔓 {0} unlocked!',
     mapStatusLocked: '🔒 {0} {1}pt (best {2}) + ⭐{3}', resetConfirm: 'Tap again to reset', langTitle: '🌐 Language',
-    helpBody: '🐤 <b>Controls</b><br>Tap / Space : flap (jump up)<br>◀ ▶ buttons / arrow keys : move<br>✨ button / Shift·S : bird skill<br><br>⭐ <b>Stars</b> : collect stars to buy birds & cosmetics and unlock maps<br><br>💫 <b>Revive</b> : revive with stars when you die (cost doubles each use)<br><br>🗺️ <b>Maps</b> : swipe on the title screen to choose · unlock with prev-map score + stars',
+    helpBody: '🐤 <b>Controls</b><br>Tap right side / Space : flap (up)<br>Slide left side (or tilt phone) / arrows : move<br>✨ button / Shift·S : bird skill<br><br>⭐ <b>Stars</b> : collect stars to buy birds & cosmetics and unlock maps<br><br>💫 <b>Revive</b> : revive with stars when you die (cost doubles each use)<br><br>🗺️ <b>Maps</b> : swipe on the title screen to choose · unlock with prev-map score + stars',
   },
   ko: {
     settings: '⚙️ 설정', title: 'Wing Dodge 3D', play: '게임 시작', shop: '⭐ 상점',
     sound: '🔊 소리', vibration: '📳 진동', lowGfx: '🪶 저사양 모드', language: '🌐 언어',
+    controls: '🎮 조작', ctrlSplit: '좌우 분할', ctrlTilt: '기울기',
     help: '❓ 도움말', support: '📮 고객센터', resetData: '🗑 데이터 초기화', close: '닫기',
     reviveQ: '💫 부활할래요?', score: '점수', giveUp: '포기하기', playingAd: '📺 광고 재생 중...',
     adPlaceholder: '(여기에 실제 광고 SDK가 연동될 자리예요)', gameOver: '게임 오버',
@@ -346,7 +349,7 @@ const UI = {
     hintNeedScore: '🔒 먼저 {0}에서 {1}점을 달성하세요 (현재 최고 {2}점)', hintNeedStars: '⭐ 부족! 해금엔 ⭐{0} 필요',
     hintConfirm: '🔓 한 번 더 누르면 해금됩니다', unlockConfirmBtn: '정말 해금할까요? (⭐{0})', unlockDone: '🔓 {0} 해금 완료!',
     mapStatusLocked: '🔒 {0} {1}점 (최고 {2}점) + ⭐{3}', resetConfirm: '정말 초기화할까요? (한 번 더 누르면 실행)', langTitle: '🌐 언어',
-    helpBody: '🐤 <b>조작</b><br>화면 탭 / 스페이스 : 날갯짓 (위로 점프)<br>◀ ▶ 버튼 / 화살표 키 : 좌우 이동<br>✨ 버튼 / Shift·S : 새 고유 스킬<br><br>⭐ <b>별</b> : 코스의 별을 모아 상점에서 새·꾸미기를 사고, 새 맵을 해금하세요<br><br>💫 <b>부활</b> : 죽으면 별로 부활할 수 있어요 (쓸수록 비용 2배)<br><br>🗺️ <b>맵</b> : 첫 화면에서 좌우로 넘겨 선택 · 이전 맵 점수 + 별로 해금',
+    helpBody: '🐤 <b>조작</b><br>오른쪽 화면 탭 / 스페이스 : 점프 (위로)<br>왼쪽 화면 밀기 (또는 폰 기울이기) / 화살표 : 이동<br>✨ 버튼 / Shift·S : 새 고유 스킬<br><br>⭐ <b>별</b> : 코스의 별을 모아 상점에서 새·꾸미기를 사고, 새 맵을 해금하세요<br><br>💫 <b>부활</b> : 죽으면 별로 부활할 수 있어요 (쓸수록 비용 2배)<br><br>🗺️ <b>맵</b> : 첫 화면에서 좌우로 넘겨 선택 · 이전 맵 점수 + 별로 해금',
   },
   ja: {
     settings: '⚙️ 設定', title: 'Wing Dodge 3D', play: 'スタート', shop: '⭐ ショップ',
@@ -2361,14 +2364,28 @@ function clearGatesAhead(n) {
 }
 skillBtnEl.addEventListener('pointerdown', e => { e.stopPropagation(); useSkill(); });
 
-// 모바일 좌우 이동 버튼 (터치 기기에서만 표시)
+// 모바일 조작: 좌우 분할 터치 / 기울기 (설정에서 선택)
 const touchControlsEl = document.getElementById('touchControls');
 const isTouchDevice = matchMedia('(pointer: coarse)').matches;
-for (const [id, code] of [['moveLBtn', 'ArrowLeft'], ['moveRBtn', 'ArrowRight']]) {
-  const b = document.getElementById(id);
-  b.addEventListener('pointerdown', e => { e.stopPropagation(); e.preventDefault(); keys[code] = true; });
-  for (const ev of ['pointerup', 'pointerleave', 'pointercancel'])
-    b.addEventListener(ev, () => { keys[code] = false; });
+let ctrlScheme = localStorage.getItem('wingdodge-ctrl') || 'split';  // 'split' | 'tilt'
+let steerX = 0;                       // 아날로그 좌우 입력 (-1..1): 터치/기울기
+let steerId = null, steerStartX = 0;
+
+// 기울기 조작 (세로모드 기준 gamma = 좌우 기울기)
+function onTilt(e) {
+  if (ctrlScheme !== 'tilt' || state !== 'playing') return;
+  const g = e.gamma || 0, dead = 4;
+  const v = Math.abs(g) < dead ? 0 : g - Math.sign(g) * dead;
+  steerX = THREE.MathUtils.clamp(v / 20, -1, 1);
+}
+let tiltOn = false;
+function enableTilt() {
+  if (tiltOn) return;
+  const add = () => { window.addEventListener('deviceorientation', onTilt); tiltOn = true; };
+  if (typeof DeviceOrientationEvent !== 'undefined' &&
+      typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission().then(p => { if (p === 'granted') add(); }).catch(() => {});
+  } else add();
 }
 const keys = {};
 let best = +(localStorage.getItem('flappy3d-best') || 0);
@@ -2417,7 +2434,8 @@ function startGame() {
   skillBtnEl.classList.remove('hidden');
   skillBtnEl.classList.add('ready');
   skillCdTxt.textContent = '';
-  if (isTouchDevice) touchControlsEl.classList.remove('hidden');
+  steerX = 0; steerId = null;
+  if (isTouchDevice && ctrlScheme === 'tilt') enableTilt();
   flap();
 }
 
@@ -2435,7 +2453,7 @@ function gameOver() {
   SFX.hit();
   vib(120);
   skillBtnEl.classList.add('hidden');
-  touchControlsEl.classList.add('hidden');
+  steerX = 0; steerId = null;
   // 게임당 1회: 광고 켜지면 '광고 보고 부활', 꺼진 지금은 '무료 부활'
   const canOnce = !adReviveUsed;
   const canStar = save.wallet >= starReviveCost;
@@ -2507,7 +2525,7 @@ function doRevive() {
   grace = 2;   // 2초 무적
   state = 'playing';
   skillBtnEl.classList.remove('hidden');
-  if (isTouchDevice) touchControlsEl.classList.remove('hidden');
+  steerX = 0; steerId = null;
   SFX.revive();
   vib(40);
 }
@@ -2681,7 +2699,18 @@ function renderSettings() {
   set('setVibBtn', vibOn);
   set('setLowBtn', lowGfx);
   document.getElementById('setLangBtn').textContent = (LANGS.find(l => l[0] === lang) || LANGS[0])[1];
+  document.getElementById('ctrlRow').style.display = isTouchDevice ? '' : 'none';   // 조작 방식은 터치 기기만
+  document.getElementById('setCtrlBtn').textContent = t(ctrlScheme === 'tilt' ? 'ctrlTilt' : 'ctrlSplit');
 }
+document.getElementById('setCtrlBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  ctrlScheme = ctrlScheme === 'split' ? 'tilt' : 'split';
+  localStorage.setItem('wingdodge-ctrl', ctrlScheme);
+  steerX = 0;
+  if (ctrlScheme === 'tilt') enableTilt();   // 선택 시 권한 요청(iOS)
+  renderSettings();
+  SFX.click();
+});
 // 언어 선택 패널 (목록에서 고르기)
 const langPanel = document.getElementById('langPanel');
 const langList = document.getElementById('langList');
@@ -2873,7 +2902,20 @@ document.getElementById('giveUpBtn').addEventListener('click', e => {
   finalizeGameOver();
 });
 
-addEventListener('pointerdown', () => { if (state === 'playing') flap(); });
+// 통합 포인터 입력: PC=클릭 점프 / 좌우분할=왼쪽 조향·오른쪽 점프 / 기울기=아무데나 점프
+addEventListener('pointerdown', e => {
+  if (state !== 'playing') return;
+  if (e.pointerType === 'touch' && ctrlScheme === 'split') {
+    if (e.clientX < innerWidth / 2) { steerId = e.pointerId; steerStartX = e.clientX; }  // 왼쪽: 조향
+    else flap();                                                                         // 오른쪽: 점프
+  } else flap();                                                                          // 마우스/기울기: 어디나 점프
+});
+addEventListener('pointermove', e => {
+  if (e.pointerId === steerId) steerX = THREE.MathUtils.clamp((e.clientX - steerStartX) / 45, -1, 1);
+});
+for (const ev of ['pointerup', 'pointercancel']) addEventListener(ev, e => {
+  if (e.pointerId === steerId) { steerId = null; steerX = 0; }
+});
 addEventListener('keydown', e => {
   keys[e.code] = true;
   if (e.code === 'Space' || e.code === 'ArrowUp') {
@@ -2995,6 +3037,7 @@ function animate() {
     let dx = 0;
     if (keys['ArrowLeft']) dx -= 1;
     if (keys['ArrowRight']) dx += 1;
+    if (dx === 0) dx = steerX;   // 키 입력 없으면 터치/기울기 아날로그 조향
     bird.position.x += dx * SIDE_SPEED * dt;
     bird.position.x = THREE.MathUtils.clamp(bird.position.x, -HALF_W + BIRD_R, HALF_W - BIRD_R);
 
