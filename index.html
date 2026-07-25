@@ -859,11 +859,19 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 document.body.appendChild(renderer.domElement);
 
-addEventListener('resize', () => {
-  camera.aspect = innerWidth / innerHeight;
+// 가로 시야 고정: 화면이 세로로 길어도 배경이 가로로 넓게 펼쳐 보이게
+const BASE_FOV = 70, BASE_AR = 16 / 9;
+const H_HALF = Math.atan(Math.tan(THREE.MathUtils.degToRad(BASE_FOV) / 2) * BASE_AR);
+function applyCamera() {
+  const ar = innerWidth / innerHeight;
+  camera.aspect = ar;
+  const v = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(H_HALF) / ar));
+  camera.fov = THREE.MathUtils.clamp(v, 55, 95);   // 너무 넓어져 왜곡되지 않게 제한
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
-});
+}
+applyCamera();
+addEventListener('resize', applyCamera);
 
 const ambient = new THREE.AmbientLight(0xffffff, 0.65);
 scene.add(ambient);
