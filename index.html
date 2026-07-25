@@ -16,6 +16,20 @@
 <meta name="twitter:title" content="Wing Dodge 3D — free 3D browser game">
 <meta name="twitter:description" content="Dodge obstacles from all four sides across 4 worlds. Free, no install.">
 <meta name="twitter:image" content="https://newser-dev.github.io/wing-dodge-3d/og-card.png">
+<script>
+  // Google Analytics (GA4) — 아래 GA_ID에 측정 ID(G-XXXXXXXXXX)를 넣으면 방문자 집계 시작
+  const GA_ID = '';
+  if (GA_ID) {
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { dataLayer.push(arguments); };
+    gtag('js', new Date());
+    gtag('config', GA_ID);
+  }
+</script>
 <style>
   html, body { margin: 0; height: 100%; overflow: hidden; background: #70c5ce; font-family: 'Segoe UI', sans-serif;
     touch-action: none; overscroll-behavior: none; -webkit-user-select: none; user-select: none;
