@@ -4,7 +4,10 @@
 <link rel="icon" href="icon-600.png">
 <link rel="apple-touch-icon" href="icon-600.png">
 <style>
-  html, body { margin: 0; height: 100%; overflow: hidden; background: #70c5ce; font-family: 'Segoe UI', sans-serif; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #70c5ce; font-family: 'Segoe UI', sans-serif;
+    touch-action: none; overscroll-behavior: none; -webkit-user-select: none; user-select: none;
+    -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
+  canvas { touch-action: none; }
   #hud { position: fixed; top: 16px; left: 0; right: 0; text-align: center; pointer-events: none; }
   #score {
     font-size: 56px; font-weight: 800; color: #fff;
@@ -84,7 +87,7 @@
   #modeHint { font-size: 14px; color: #ffe9a0; text-shadow: 0 2px 0 rgba(0,0,0,.4); min-height: 18px; }
 
   /* 상점 */
-  #shopScroll { max-height: 68vh; overflow-y: auto; padding: 4px 16px; width: min(720px, 94vw); }
+  #shopScroll { max-height: 68vh; overflow-y: auto; padding: 4px 16px; width: min(720px, 94vw); touch-action: pan-y; }
   .shop-cat { font-size: 20px; font-weight: 800; margin: 14px 0 8px; text-align: left; text-shadow: 0 2px 0 rgba(0,0,0,.4); }
   .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
   .card {
@@ -108,7 +111,7 @@
   .set-toggle { padding: 8px 22px; font-size: 16px; min-width: 90px; }
   .set-toggle.off { background: #9a9a9a; color: #333; box-shadow: 0 4px 0 #6f6f6f; }
   #langList { max-height: 62vh; overflow-y: auto; display: flex; flex-direction: column;
-    gap: 8px; width: min(320px, 88vw); padding: 4px; }
+    gap: 8px; width: min(320px, 88vw); padding: 4px; touch-action: pan-y; }
   .lang-item {
     padding: 12px 18px; font-size: 18px; font-weight: 700; border: 3px solid transparent;
     border-radius: 12px; cursor: pointer; background: rgba(255,255,255,.15); color: #fff;
@@ -2902,19 +2905,28 @@ document.getElementById('giveUpBtn').addEventListener('click', e => {
   finalizeGameOver();
 });
 
-// 통합 포인터 입력: PC=클릭 점프 / 좌우분할=왼쪽 조향·오른쪽 점프 / 기울기=아무데나 점프
+// 통합 포인터 입력: PC=클릭 점프 / 좌우분할=왼쪽 밀면 조향·탭하면 점프, 오른쪽 탭 점프 / 기울기=아무데나 점프
+let steerMoved = false;
 addEventListener('pointerdown', e => {
   if (state !== 'playing') return;
   if (e.pointerType === 'touch' && ctrlScheme === 'split') {
-    if (e.clientX < innerWidth / 2) { steerId = e.pointerId; steerStartX = e.clientX; }  // 왼쪽: 조향
-    else flap();                                                                         // 오른쪽: 점프
-  } else flap();                                                                          // 마우스/기울기: 어디나 점프
+    if (e.clientX < innerWidth / 2 && steerId === null) {
+      steerId = e.pointerId; steerStartX = e.clientX; steerMoved = false;   // 왼쪽: 조향 추적 시작
+    } else flap();                                                          // 오른쪽 / 조향 중 두 번째 손가락: 점프
+  } else flap();                                                            // 마우스 / 기울기: 어디나 점프
 });
 addEventListener('pointermove', e => {
-  if (e.pointerId === steerId) steerX = THREE.MathUtils.clamp((e.clientX - steerStartX) / 45, -1, 1);
+  if (e.pointerId === steerId) {
+    const d = e.clientX - steerStartX;
+    if (Math.abs(d) > 8) steerMoved = true;
+    steerX = THREE.MathUtils.clamp(d / 40, -1, 1);
+  }
 });
 for (const ev of ['pointerup', 'pointercancel']) addEventListener(ev, e => {
-  if (e.pointerId === steerId) { steerId = null; steerX = 0; }
+  if (e.pointerId === steerId) {
+    if (!steerMoved && ev === 'pointerup' && state === 'playing') flap();   // 왼쪽 '탭'(안 밀었으면) = 점프
+    steerId = null; steerX = 0;
+  }
 });
 addEventListener('keydown', e => {
   keys[e.code] = true;
