@@ -16,6 +16,9 @@
 <meta name="twitter:title" content="Wing Dodge 3D — free 3D browser game">
 <meta name="twitter:description" content="Dodge obstacles from all four sides across 4 worlds. Free, no install.">
 <meta name="twitter:image" content="https://newser-dev.github.io/wing-dodge-3d/og-card.png">
+<!-- 애드센스 사이트 소유권 확인 -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6240593008907807"
+     crossorigin="anonymous"></script>
 <script>
   // Google Analytics (GA4) — 아래 GA_ID에 측정 ID(G-XXXXXXXXXX)를 넣으면 방문자 집계 시작
   const GA_ID = '';
@@ -2364,7 +2367,8 @@ let vy = 0, score = 0, speed = 26, playTime = 0, runStars = 0;
 let flapT = 99;                 // 마지막 날갯짓 후 경과 시간 (99 = 접힌 상태)
 const FLAP_DUR = 0.32;          // 한 번 퍼덕이는 시간
 let wingSpread = 1, wingStroke = 0;   // 날개 상태 (부드러운 전환용)
-const ADS_ENABLED = true;       // '광고 보고 부활' 버튼 노출. 실제 광고는 window.tossShowRewardedAd 주입 시 재생, 없으면 임시 대기화면
+// 애드센스 심사 중에는 false 권장(가짜 광고 화면이 노출되지 않게). 광고 승인 후 true로.
+const ADS_ENABLED = false;      // true면 '광고 보고 부활', false면 '무료 부활(1회)'
 const REVIVE_COST = 20;         // 별 부활 기본 비용 (쓸 때마다 2배)
 let starReviveCost = REVIVE_COST;
 let adReviveUsed = false;       // 광고 부활은 게임당 1회
@@ -2900,13 +2904,10 @@ document.getElementById('resetBtn').addEventListener('click', e => {
 // · 웹사이트: 애드센스 H5 Games Ads(adBreak). 아래 ADSENSE_PUB에 승인받은 게시자 ID 입력 시 활성화
 // · 앱인토스: 래퍼가 window.tossShowRewardedAd(cb) 주입 시 자동 사용 (토스 SDK GoogleAdMob)
 // · 둘 다 없으면 임시 대기화면(3초)
-const ADSENSE_PUB = '';  // TODO: 애드센스 승인 후 'ca-pub-XXXXXXXXXXXXXXXX' 입력하면 웹 광고 켜짐
+// 애드센스 스크립트는 <head>에 이미 로드됨. H5 게임광고(보상형) 승인 후 true로 바꾸면 실제 광고 재생
+const ADSENSE_ADS_READY = false;
+const ADSENSE_PUB = ADSENSE_ADS_READY ? 'ca-pub-6240593008907807' : '';
 if (ADSENSE_PUB) {
-  const s = document.createElement('script');
-  s.async = true;
-  s.crossOrigin = 'anonymous';
-  s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + ADSENSE_PUB;
-  document.head.appendChild(s);
   window.adsbygoogle = window.adsbygoogle || [];
   window.adBreak = window.adConfig = o => adsbygoogle.push(o);
   adConfig({ preloadAdBreaks: 'on' });
