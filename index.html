@@ -785,14 +785,20 @@ const SECTIONS = [
 const itemById = id => ITEMS.find(i => i.id === id);
 // 모드 목록 + 해금 조건 (이전 맵 최소 점수 달성 + 별 구매, 둘 다 필요)
 // label은 이모지+이름(nm)으로 동적 생성 → modeLabel()
+// cost 0 + req → 점수만 달성하면 자동 해금 / cost > 0 → 점수 + 별 구매
 const MODES = [
   { id: 'forest',    emoji: '🌲', cost: 0 },
-  { id: 'temple',    emoji: '🏛️', cost: 500,  req: { mode: 'forest', score: 50 } },
-  { id: 'glass',     emoji: '🪟', cost: 1000, req: { mode: 'temple', score: 100 } },
-  { id: 'backrooms', emoji: '🟨', cost: 1500, req: { mode: 'glass', score: 150 } },
+  { id: 'temple',    emoji: '🏛️', cost: 0,    req: { mode: 'forest', score: 50 } },
+  { id: 'glass',     emoji: '🪟', cost: 500,  req: { mode: 'temple', score: 100 } },
+  { id: 'backrooms', emoji: '🟨', cost: 1000, req: { mode: 'glass', score: 150 } },
 ];
 const modeLabel = s => `${s.emoji} ${nm(s.id)}`;
-const modeUnlocked = m => m.cost === 0 || (save.unlockedModes ?? []).includes(m.id);
+const reqMet = m => !m.req || (save.bestMode[m.req.mode] ?? 0) >= m.req.score;
+const modeUnlocked = m =>
+  !m.req ? true                                       // 숲: 항상
+  : (save.unlockedModes ?? []).includes(m.id) ? true  // 이미 해금됨
+  : m.cost === 0 ? reqMet(m)                          // 무료: 점수만 달성하면 자동
+  : false;                                            // 유료: 별로 구매 필요
 
 // 현재 모드의 세계 설정 (메뉴에서는 캐러셀 미리보기 우선, 신전은 장착한 하늘)
 const worldItem = () => {
@@ -2579,9 +2585,12 @@ function finalizeGameOver() {
   best = Math.max(best, score);
   localStorage.setItem('flappy3d-best', best);
   save.wallet += runStars;
-  // 모드별 최고 점수 기록
+  // 모드별 최고 점수 기록 → 점수로 해금되는 맵이 새로 열렸는지 확인
+  const wasUnlocked = MODES.filter(modeUnlocked).map(m => m.id);
   save.bestMode[save.mode] = Math.max(save.bestMode[save.mode] ?? 0, score);
-  document.getElementById('unlockMsg').textContent = '';
+  const newly = MODES.filter(m => modeUnlocked(m) && !wasUnlocked.includes(m.id));
+  document.getElementById('unlockMsg').textContent =
+    newly.length ? t('unlockDone', nm(newly[0].id)) : '';
   renderCarousel();
   persist();
   // 토스 게임센터 리더보드에 점수 제출 (앱인토스 환경에서만 동작)
@@ -2663,11 +2672,17 @@ function renderCarousel() {
     unlockBtnEl.classList.add('hidden');
   } else if (!modeUnlocked(s)) {
     const bestPrev = save.bestMode[s.req.mode] ?? 0;
-    mapStatusEl.textContent = t('mapStatusLocked', nm(s.req.mode), s.req.score, bestPrev, s.cost);
     startBtnEl.disabled = true;
     startBtnEl.textContent = t('locked');
-    unlockBtnEl.classList.remove('hidden');
-    unlockBtnEl.textContent = t('unlockMode', s.cost);
+    if (s.cost === 0) {
+      // 점수만으로 해금되는 맵: 별 표시 없이 목표 점수만 안내
+      mapStatusEl.textContent = t('hintNeedScore', nm(s.req.mode), s.req.score, bestPrev);
+      unlockBtnEl.classList.add('hidden');
+    } else {
+      mapStatusEl.textContent = t('mapStatusLocked', nm(s.req.mode), s.req.score, bestPrev, s.cost);
+      unlockBtnEl.classList.remove('hidden');
+      unlockBtnEl.textContent = t('unlockMode', s.cost);
+    }
   } else {
     mapStatusEl.textContent = '';
     startBtnEl.disabled = false;
